@@ -4,18 +4,17 @@ FROM litcoderr/tch-rs
 RUN apt-get update -y && \
   apt-get upgrade -y
 
-# install unzip
+# install prerequisites
 RUN apt-get install -y unzip
-
-# install git
 RUN apt-get install -y git
 
-# install homebrew
-RUN DEBIAN_FRONTEND=noninteractive /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-RUN echo 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"' >> /root/.bashrc
-
-# install neovim
-RUN /home/linuxbrew/.linuxbrew/bin/brew install neovim
+# universal way to install neovim
+RUN cd /
+RUN curl -LO https://github.com/neovim/neovim/releases/latest/download/nvim.appimage
+RUN chmod u+x nvim.appimage
+RUN ./nvim.appimage --appimage-extract
+RUN ./squashfs-root/AppRun --version
+RUN ln -s /squashfs-root/AppRun /usr/bin/nvim
 RUN git clone https://github.com/litcoderr/my_lazyvim.git ~/.config/nvim
 
 # add alias
